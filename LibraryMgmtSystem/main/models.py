@@ -23,6 +23,7 @@ class CustomUser(AbstractUser):
 
 class LibraryUser(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
+    name = models.TextField()
     card_no = models.CharField(max_length=12)
     date_joined = models.DateTimeField(auto_now_add=True)
 
