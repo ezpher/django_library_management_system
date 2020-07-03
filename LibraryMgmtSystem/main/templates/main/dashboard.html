@@ -1,0 +1,78 @@
+{% extends 'main/main.html' %}
+
+{% block content %}
+
+{% include 'main/status.html' %}
+
+<br>
+
+<div class="row">
+	<div class="col-md-5 mb-3">
+		<h5>LIBRARY USERS:</h5>
+		<hr>
+		<div class="card card-body">
+			<a class="btn btn-primary btn-sm btn-block" href="">Create Library User</a>
+			<table class="table table-sm mt-3">
+				<thead>
+					<tr>
+						<th></th>
+						<th>Card No.</th>
+						<th>User</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for library_user in library_users %}
+					<tr>
+                        <td><a class="btn btn-sm btn-info" href="">View</a></td>
+                        <td>{{library_user.card_no}}</td>
+                        <td>{{library_user.name}}</td>
+						<td><a class="btn btn-sm btn-info" href="">Update</a></td>
+						<td><a class="btn btn-sm btn-danger" href="">Remove</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="col-md-7 mb-3">
+		<h5>LATEST OVERDUE BOOKS</h5>
+		<hr>
+		<div class="card card-body table-responsive text-nowrap">
+			<a class="btn btn-primary btn-sm btn-block" href="">Checkout Book</a>
+			<table class="table table-sm mt-3 flex-nowrap">
+				<thead>
+					<tr>
+						<th></th>
+						<th>Times Renewed</th>
+						<th>Due Date</th>
+						<th>Card No.</th>
+						<th>User</th>
+						<th>Email</th>					
+						<th>Book</th>						
+					</tr>	
+				</thead>
+				
+				{% for book_transaction in book_transactions %}
+				<tbody>
+					<tr>
+						<td><a class="btn btn-sm btn-info" href="">Renew</a></td>
+						<td>{{book_transaction.times_renewed}}</td>
+						<td>{{book_transaction.date_due}}</td>
+						<td>{{book_transaction.library_user.card_no}}</td>
+						<td>{{book_transaction.library_user.name}}</td>
+						<td>{{book_transaction.library_user.user.email}}</td>
+						<td>{{book_transaction.book.title}}</td>												
+					</tr>
+				</tbody>
+				{% endfor %}		
+			</table>
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}

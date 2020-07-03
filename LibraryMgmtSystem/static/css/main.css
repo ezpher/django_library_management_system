@@ -1,0 +1,20 @@
+#logo{
+}
+
+    body{
+        background-color: #ebeff5;
+    }
+
+    #total-books-on-loan{
+        background-color: #4cb4c7;
+    }
+
+    #books-not-yet-overdue{
+        background-color: #7abecc;
+    }
+
+    #books-overdue{
+        background-color: #7CD1C0;
+    }
+
+    /* horizontal scrolling for tables https://stackoverflow.com/questions/57159939/boostrap-4-container-row-col-with-horizontal-scrolling */
