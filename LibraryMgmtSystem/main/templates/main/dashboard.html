@@ -10,9 +10,9 @@
 	<div class="col-md-5 mb-3">
 		<h5>LIBRARY USERS:</h5>
 		<hr>
-		<div class="card card-body">
+		<div class="card card-body table-responsive text-nowrap">
 			<a class="btn btn-primary btn-sm btn-block" href="">Create Library User</a>
-			<table class="table table-sm mt-3">
+			<table class="table table-sm mt-3 flex-nowrap">
 				<thead>
 					<tr>
 						<th></th>
@@ -35,6 +35,28 @@
 					{% endfor %}
 				</tbody>
 			</table>
+
+			{% if library_users.has_other_pages %}
+			<ul class="pagination">
+				{% if library_users.has_previous %}
+				<li class="page-item"><a class="page-link" href="?library_users_page={{ library_users.previous_page_number }}">&laquo;</a></li>
+				{% else %}
+				<li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+				{% endif %}
+				{% for page in library_users.paginator.page_range %}
+				{% if library_users.number == page %}
+					<li class="page-item active"><span class="page-link">{{ page }} <span class="sr-only">(current)</span></span></li>
+				{% else %}
+					<li class="page-item"><a class="page-link" href="?library_users_page={{ page }}">{{ page }}</a></li>
+				{% endif %}
+				{% endfor %}
+				{% if library_users.has_next %}
+				<li class="page-item"><a class="page-link" href="?library_users_page={{ library_users.next_page_number }}">&raquo;</a></li>
+				{% else %}
+				<li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+				{% endif %}
+			</ul>
+			{% endif %}
 		</div>
 	</div>
 
@@ -70,6 +92,28 @@
 				</tbody>
 				{% endfor %}		
 			</table>
+
+			{% if book_transactions.has_other_pages %}
+				<ul class="pagination">
+					{% if book_transactions.has_previous %}
+					<li class="page-item"><a class="page-link" href="?transactions_page={{ book_transactions.previous_page_number }}">&laquo;</a></li>
+					{% else %}
+					<li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+					{% endif %}
+					{% for page in book_transactions.paginator.page_range %}
+					{% if book_transactions.number == page %}
+						<li class="page-item active"><span class="page-link">{{ page }} <span class="sr-only">(current)</span></span></li>
+					{% else %}
+						<li class="page-item"><a class="page-link" href="?transactions_page={{ page }}">{{ page }}</a></li>
+					{% endif %}
+					{% endfor %}
+					{% if book_transactions.has_next %}
+					<li class="page-item"><a class="page-link" href="?transactions_page={{ book_transactions.next_page_number }}">&raquo;</a></li>
+					{% else %}
+					<li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+					{% endif %}
+				</ul>
+			{% endif %}
 		</div>
 	</div>
 
