@@ -2,7 +2,7 @@
 
 {% block content %}
 
-{% include 'main/status.html' %}
+{% include 'main/status.html' with total_books_on_loan=total_books_on_loan books_not_yet_overdue=books_not_yet_overdue books_due=books_due %}
 
 <br>
 

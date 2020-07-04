@@ -7,6 +7,11 @@ from .filters import LibraryUserFilter
 # Create your views here.
 
 def dashboard(request):
+
+    # get book status fields: total books on loan, books_not_yet_overdue, books_due
+    total_books_on_loan = BookTransaction.objects.filter(date_returned__isnull=True).count()
+    books_not_yet_overdue = BookTransaction.objects.filter(date_returned__isnull=True).filter(date_due__gt=timezone.now()).count()
+    books_due = BookTransaction.objects.filter(date_returned__isnull=True).filter(date_due__lt=timezone.now()).count()
     
     # get library users 
     library_users = LibraryUser.objects.all()
@@ -35,6 +40,6 @@ def dashboard(request):
     transactions_paginator = Paginator(book_transactions, '5')
     paginated_book_transactions = transactions_paginator.get_page(transactions_page_number)
 
-    context_object = {'library_user_filter': library_user_filter, 'library_users': paginated_users, 'book_transactions': paginated_book_transactions}
+    context_object = {'total_books_on_loan': total_books_on_loan, 'books_not_yet_overdue': books_not_yet_overdue, 'books_due': books_due, 'library_user_filter': library_user_filter, 'library_users': paginated_users, 'book_transactions': paginated_book_transactions}
 
     return render(request, template_name='main/dashboard.html', context=context_object)
