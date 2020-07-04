@@ -12,6 +12,10 @@
 		<hr>
 		<div class="card card-body table-responsive text-nowrap">
 			<a class="btn btn-primary btn-sm btn-block" href="">Create Library User</a>
+			<form class="search-users-form mt-3 mx-auto" method="GET">
+				{{library_user_filter.form}}
+				<button class="btn btn-primary" type="submit">Search</button>
+			</form>
 			<table class="table table-sm mt-3 flex-nowrap">
 				<thead>
 					<tr>
