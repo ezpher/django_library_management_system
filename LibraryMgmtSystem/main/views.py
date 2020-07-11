@@ -1,11 +1,53 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from .models import LibraryUser, BookTransaction
 from django.utils import timezone
 from django.core.paginator import Paginator
 from .filters import LibraryUserFilter
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from .decorators import is_authorised_user
 
 # Create your views here.
 
+@is_authorised_user
+def loginPage(request):
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        custom_user = authenticate(request, username=username, password=password)
+
+        if custom_user is not None and custom_user.is_staff:
+            login(request, custom_user)
+            return redirect('dashboard')
+        elif custom_user is not None and not custom_user.is_staff:            	
+            messages.warning(request, 'User does not have admin privileges')
+        else:
+            messages.warning(request, 'Username OR Password is incorrect')
+
+        '''somehow checking groups is not reliable'''
+        # group = None
+
+        # if custom_user is not None and custom_user.groups.exists():
+        #     group = custom_user.groups.all()[0].name
+        #     if group == 'admin':
+        #         login(request, custom_user)
+        #         return redirect('dashboard')
+        #     else:            	
+        #         messages.warning(request, 'User does not have admin privileges')
+        # else:
+        #     messages.warning(request, 'Username OR Password is incorrect')
+            
+    context = {}
+    return render(request, template_name='main/login.html', context=context)
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
+
+@login_required(login_url='login')
 def dashboard(request):
 
     # get book status fields: total books on loan, books_not_yet_overdue, books_due
@@ -25,7 +67,7 @@ def dashboard(request):
     library_user_filter = LibraryUserFilter(request.GET, queryset=library_users)
 
     # paginate library users 
-    # Note: pagination will not work if name is not empty since it will always default to default pagination i.e. without search term
+    # Note: pagination will not work if name is not empty and reloading page without clicking search button since it will always default to default pagination i.e. without search term
     if request.method == 'GET' and not request.GET.get('name', False):      
         users_page_number = request.GET.get('library_users_page')
         paginated_users = users_paginator.get_page(users_page_number)

@@ -18,5 +18,7 @@ from django.urls import path, include
 from main import views
 
 urlpatterns = [
+    path('login/', views.loginPage, name='login'),
+    path('logout/', views.logoutUser, name="logout"),
     path('', views.dashboard,  name='dashboard')
 ]
