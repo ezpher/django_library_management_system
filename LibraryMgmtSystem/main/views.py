@@ -1,16 +1,20 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import LibraryUser, BookTransaction
-from django.utils import timezone
-from django.core.paginator import Paginator
-from .filters import LibraryUserFilter
+from django.urls import reverse
+
 from django.contrib.auth.decorators import login_required
+from .decorators import is_authorised_user
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .decorators import is_authorised_user
+
+from django.utils import timezone
+from django.core.paginator import Paginator
+
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
-from .forms import LibraryUserEditForm
-from django.urls import reverse
+from django.views.generic.edit import UpdateView, FormView
+from .models import LibraryUser, BookTransaction
+from .forms import LibraryUserEditForm, LibraryUserCreateForm, CustomUserCreationForm
+from .filters import LibraryUserFilter
 
 # Create your views here.
 
@@ -117,4 +121,36 @@ class LibraryUserUpdate(UpdateView):
 
     def get_success_url(self):
         return reverse('library_user_update', kwargs = {'pk': self.kwargs['pk']}) 
+
+class LibraryUserCreate(FormView):
+
+    template_name = 'main/library_user_create.html'
+
+    def get(self, request, *args, **kwargs):
+        base_user_creation_form = CustomUserCreationForm()
+        base_user_creation_form.prefix = 'user_create_form'
+
+        library_user_creation_form = LibraryUserCreateForm()
+        library_user_creation_form.prefix = 'library_user_create_form'
+        return render(request, template_name=self.template_name, context={'user_create_form':base_user_creation_form, 'library_user_create_form':library_user_creation_form})
+
+    def post(self, request, *args, **kwargs):
+        base_user_creation_form = CustomUserCreationForm(self.request.POST, prefix='user_create_form')
+        library_user_creation_form = LibraryUserCreateForm(self.request.POST, prefix='library_user_create_form')
+
+        if base_user_creation_form.is_valid() and library_user_creation_form.is_valid():            
+            new_user = base_user_creation_form.save()
+            new_library_user = library_user_creation_form.save(commit=False) 
+            new_library_user.user = new_user
+            new_library_user.save()
+            return HttpResponseRedirect(reverse('library_user_view', args=(new_library_user.pk,)))
+        else:
+            return self.form_invalid(request, base_user_creation_form, library_user_creation_form, **kwargs)
+
+    def form_invalid(self, request, base_user_creation_form, library_user_creation_form, **kwargs):
+        base_user_creation_form.prefix='user_create_form'
+        library_user_creation_form.prefix='library_user_create_form'
+        return render(request, template_name=self.template_name, context={'user_create_form':base_user_creation_form, 'library_user_create_form':library_user_creation_form})
+
+
 

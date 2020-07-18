@@ -11,7 +11,7 @@
 		<h5>LIBRARY USERS:</h5>
 		<hr>
 		<div class="card card-body table-responsive text-nowrap">
-			<a class="btn btn-primary btn-sm btn-block" href="">Create Library User</a>
+			<a class="btn btn-primary btn-sm btn-block" href="{% url 'library_user_create' %}">Create Library User</a>
 			<form class="search-users-form mt-3 mx-auto" method="GET">
 				{{library_user_filter.form}}
 				<button class="btn btn-primary" type="submit">Search</button>

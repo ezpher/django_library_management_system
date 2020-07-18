@@ -1,0 +1,25 @@
+{%  extends 'main/main.html' %}
+
+
+{% block content %}
+
+<br>
+<br> 
+
+<div class="row">        
+    <div class="col-md">
+        <div class="card card-body">
+            <h5>Create Library User</h5>
+            <hr>
+            <form method="POST" action="">
+                {% csrf_token %}
+                {{user_create_form.as_p}}
+                <hr>
+                {{library_user_create_form.as_p}}
+                <input type="submit" value="Create">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
