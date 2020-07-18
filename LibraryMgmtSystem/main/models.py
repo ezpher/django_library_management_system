@@ -25,7 +25,7 @@ class LibraryUser(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     name = models.TextField()
     card_no = models.CharField(max_length=12)
-    date_joined = models.DateTimeField(auto_now_add=True)
+    date_joined = models.DateTimeField(default=timezone.now) # note that if field is indicated as non-editable e.g. auto_now_add=True, cannot render on forms such as your admin forms/regular django forms
 
     def __str__(self):
         return self.name

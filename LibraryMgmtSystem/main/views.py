@@ -8,6 +8,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .decorators import is_authorised_user
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView
+from .forms import LibraryUserEditForm
+from django.urls import reverse
 
 # Create your views here.
 
@@ -93,9 +96,25 @@ class LibraryUserDetails(DetailView):
     # default context_object_name is the model object in lowercase e.g. libraryuser
     # if dealing with list of objects, default context_object_name is object_list
     # use context_object_name to override default name in both cases
-    context_object_name = "library_user"
+    context_object_name = 'library_user'
 
-    # user get_queryset even when trying to retrieve single object
+    # use get_queryset even when trying to retrieve single object
     def get_queryset(self):
         self.library_user = get_object_or_404(LibraryUser, id=self.kwargs['pk'])
         return LibraryUser.objects.filter(id=self.library_user.id)
+
+class LibraryUserUpdate(UpdateView):
+
+    template_name = 'main/library_user_update.html'
+    form_class = LibraryUserEditForm
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def get_queryset(self):
+        self.library_user = get_object_or_404(LibraryUser, id=self.kwargs['pk'])
+        return LibraryUser.objects.filter(id=self.library_user.id)
+
+    def get_success_url(self):
+        return reverse('library_user_update', kwargs = {'pk': self.kwargs['pk']}) 
+

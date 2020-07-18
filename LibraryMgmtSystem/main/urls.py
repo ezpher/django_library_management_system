@@ -22,7 +22,8 @@ urlpatterns = [
     path('logout/', views.logoutUser, name="logout"),
     path('', views.dashboard,  name='dashboard'),
     # note that object-identifer should use pk instead of user-defined parameter or else error will be thrown
-    path('library_user/<int:pk>/', views.LibraryUserDetails.as_view() ,name='library_user_view')
+    path('library_user/<int:pk>/', views.LibraryUserDetails.as_view() ,name='library_user_view'),
+    path('library_user_update/<int:pk>/', views.LibraryUserUpdate.as_view() ,name='library_user_update')
 ]
 
 

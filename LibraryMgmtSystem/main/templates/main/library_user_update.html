@@ -1,0 +1,29 @@
+{%  extends 'main/main.html' %}
+
+{% block content %}
+
+<style>
+    input[readonly].field_readonly{
+        background-color:transparent;
+        border: 0;
+        font-size: 1em;
+    }
+</style>
+
+<br>
+<br>
+
+<div class="row">        
+    <div class="col-md">
+        <div class="card card-body">
+            <form method="POST" action="">
+                {% csrf_token %}
+                {{form.as_p}}
+                <input type="submit" value="Update">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
