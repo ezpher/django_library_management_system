@@ -1,0 +1,25 @@
+{%  extends 'main/main.html' %}
+
+
+{% block content %}
+
+<br>
+<br> 
+
+<div class="row">        
+    <div class="col-md">
+        <div class="card card-body">
+            <h5>Library User</h5>
+            <hr>
+            <p>Card No.: {{library_user.card_no}}</p>
+            <p>Name: {{library_user.name}}</p>
+            <p>Email: {{library_user.user.email}}</p>
+            <p>Date Joined: {{library_user.date_joined}}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+    
+
+

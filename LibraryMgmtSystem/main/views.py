@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from .models import LibraryUser, BookTransaction
 from django.utils import timezone
 from django.core.paginator import Paginator
@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .decorators import is_authorised_user
+from django.views.generic.detail import DetailView
 
 # Create your views here.
 
@@ -85,3 +86,16 @@ def dashboard(request):
     context_object = {'total_books_on_loan': total_books_on_loan, 'books_not_yet_overdue': books_not_yet_overdue, 'books_due': books_due, 'library_user_filter': library_user_filter, 'library_users': paginated_users, 'book_transactions': paginated_book_transactions}
 
     return render(request, template_name='main/dashboard.html', context=context_object)
+
+class LibraryUserDetails(DetailView):
+
+    template_name = 'main/library_user_view.html'
+    # default context_object_name is the model object in lowercase e.g. libraryuser
+    # if dealing with list of objects, default context_object_name is object_list
+    # use context_object_name to override default name in both cases
+    context_object_name = "library_user"
+
+    # user get_queryset even when trying to retrieve single object
+    def get_queryset(self):
+        self.library_user = get_object_or_404(LibraryUser, id=self.kwargs['pk'])
+        return LibraryUser.objects.filter(id=self.library_user.id)

@@ -30,7 +30,7 @@
 				<tbody>
 					{% for library_user in library_users %}
 					<tr>
-                        <td><a class="btn btn-sm btn-info" href="">View</a></td>
+                        <td><a class="btn btn-sm btn-info" href="{% url 'library_user_view' library_user.id %}">View</a></td>
                         <td>{{library_user.card_no}}</td>
                         <td>{{library_user.name}}</td>
 						<td><a class="btn btn-sm btn-info" href="">Update</a></td>

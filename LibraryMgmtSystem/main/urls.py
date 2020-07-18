@@ -20,5 +20,9 @@ from main import views
 urlpatterns = [
     path('login/', views.loginPage, name='login'),
     path('logout/', views.logoutUser, name="logout"),
-    path('', views.dashboard,  name='dashboard')
+    path('', views.dashboard,  name='dashboard'),
+    # note that object-identifer should use pk instead of user-defined parameter or else error will be thrown
+    path('library_user/<int:pk>/', views.LibraryUserDetails.as_view() ,name='library_user_view')
 ]
+
+
