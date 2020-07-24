@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, get_list_or_404, redirect, render
 from django.urls import reverse
 
 from django.contrib.auth.decorators import login_required
@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.core.paginator import Paginator
 
+from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, FormView
 from .models import LibraryUser, BookTransaction
@@ -95,12 +96,36 @@ def dashboard(request):
 
     return render(request, template_name='main/dashboard.html', context=context_object)
 
-class LibraryUserDetails(DetailView):
+class LibraryUserList(ListView):
 
-    template_name = 'main/library_user_view.html'
+    template_name = 'main/library_users.html'
     # default context_object_name is the model object in lowercase e.g. libraryuser
     # if dealing with list of objects, default context_object_name is object_list
     # use context_object_name to override default name in both cases
+    context_object_name = 'library_users'
+
+    def get_queryset(self):
+        # get library users
+        library_users = get_list_or_404(LibraryUser.objects.all().order_by('name'))
+
+        # setup paginator
+        users_page_number = 1
+        paginated_users = None
+        users_paginator = Paginator(library_users, '5')        
+
+        # differentiate between clicking on page number and loading page for first time
+        if self.request.method == 'GET' and self.request.GET.get('library_users_page'):      
+            users_page_number = self.request.GET.get('library_users_page')
+            paginated_users = users_paginator.get_page(users_page_number)
+        elif self.request.method == 'GET' and not self.request.GET.get('library_users_page', False):
+            paginated_users = users_paginator.get_page(users_page_number)
+
+        # return paginated library users        
+        return paginated_users
+
+class LibraryUserDetails(DetailView):
+
+    template_name = 'main/library_user_view.html'
     context_object_name = 'library_user'
 
     # use get_queryset even when trying to retrieve single object
