@@ -63,8 +63,9 @@ def dashboard(request):
     books_not_yet_overdue = BookTransaction.objects.filter(date_returned__isnull=True).filter(date_due__gt=timezone.now()).count()
     books_due = BookTransaction.objects.filter(date_returned__isnull=True).filter(date_due__lt=timezone.now()).count()
     
-    # get library users 
-    library_users = LibraryUser.objects.all()
+    # get library users and count
+    library_users = LibraryUser.objects.all().order_by('name')
+    library_users_count = library_users.count()
 
     # setup paginator
     users_page_number = 1
@@ -85,12 +86,12 @@ def dashboard(request):
         paginated_users = users_paginator.get_page(users_page_number)
 
     # get and paginate book transactions
-    book_transactions = BookTransaction.objects.filter(date_due__lt=timezone.now())
+    book_transactions = BookTransaction.objects.filter(date_due__lt=timezone.now()).order_by('date_due')
     transactions_page_number = request.GET.get('transactions_page')
     transactions_paginator = Paginator(book_transactions, '5')
     paginated_book_transactions = transactions_paginator.get_page(transactions_page_number)
 
-    context_object = {'total_books_on_loan': total_books_on_loan, 'books_not_yet_overdue': books_not_yet_overdue, 'books_due': books_due, 'library_user_filter': library_user_filter, 'library_users': paginated_users, 'book_transactions': paginated_book_transactions}
+    context_object = {'total_books_on_loan': total_books_on_loan, 'books_not_yet_overdue': books_not_yet_overdue, 'books_due': books_due, 'library_user_filter': library_user_filter, 'library_users': paginated_users, 'library_users_count': library_users_count, 'book_transactions': paginated_book_transactions}
 
     return render(request, template_name='main/dashboard.html', context=context_object)
 
