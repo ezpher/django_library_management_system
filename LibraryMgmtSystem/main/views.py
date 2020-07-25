@@ -18,6 +18,9 @@ from .forms import LibraryUserEditForm, LibraryUserCreateForm, CustomUserCreatio
 from .filters import LibraryUserFilter
 
 # Create your views here.
+# TODO to add authorisation decorators to classes/functions without them
+# TODO to add search and CRUD functionality to users list view
+# TODO to add ajax modal for delete user functionality
 
 @is_authorised_user
 def loginPage(request):

@@ -24,6 +24,7 @@ class CustomUser(AbstractUser):
 class LibraryUser(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, null=True)
     name = models.TextField()
+    # TODO to make card no. auto-generated
     card_no = models.CharField(max_length=12)
     date_joined = models.DateTimeField(default=timezone.now) # note that if field is indicated as non-editable e.g. auto_now_add=True, cannot render on forms such as your admin forms/regular django forms
 
@@ -66,6 +67,7 @@ class Book(models.Model):
         return self.title
 
 class Transaction(models.Model):
+    # TODO to make transaction ref auto-generated
     transaction_ref = models.CharField(max_length=13, unique=True)
     books = models.ManyToManyField(Book, through='BookTransaction')
     date_created = models.DateTimeField(auto_now_add=True)
@@ -77,6 +79,7 @@ def get_default_duedate():
     return timezone.now().date() + timedelta(days=7)
 
 class BookTransaction(models.Model):
+    # TODO to shift library user to transaction instead (normalization and allows for cascade-delete of transaction and book transaction from deletion of user)
     library_user = models.ForeignKey(LibraryUser, on_delete=models.CASCADE, related_name='book_transactions')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_transactions')
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='book_transactions')
