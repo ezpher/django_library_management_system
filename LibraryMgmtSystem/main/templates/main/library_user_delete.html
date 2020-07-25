@@ -1,0 +1,27 @@
+{%  extends 'main/main.html' %}
+
+{% block content %}
+
+<br>
+<br> 
+
+<div class="row">        
+    <div class="col-md">
+        <div class="card card-body">
+            <h5>Remove Library User</h5>
+            <hr>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <h6>Are you sure you want to remove user: {{user.email}}?</h6>
+                <hr>
+                <p>
+                    <input type="submit" value="Yes">
+                    <a href="{% url 'dashboard' %}"><input type="button" value="Cancel"></a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+    

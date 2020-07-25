@@ -18,3 +18,10 @@
     }
 
     /* horizontal scrolling for tables https://stackoverflow.com/questions/57159939/boostrap-4-container-row-col-with-horizontal-scrolling */
+
+    #messages{
+        background-color: grey;
+        color: #fff;
+        padding: 10px;
+        margin-top: 10px;
+    }

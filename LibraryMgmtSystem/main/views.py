@@ -12,8 +12,8 @@ from django.core.paginator import Paginator
 
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView, FormView
-from .models import LibraryUser, BookTransaction
+from django.views.generic.edit import UpdateView, DeleteView, FormView
+from .models import CustomUser, LibraryUser, BookTransaction
 from .forms import LibraryUserEditForm, LibraryUserCreateForm, CustomUserCreationForm
 from .filters import LibraryUserFilter
 
@@ -128,7 +128,7 @@ class LibraryUserDetails(DetailView):
     template_name = 'main/library_user_view.html'
     context_object_name = 'library_user'
 
-    # use get_queryset even when trying to retrieve single object
+    # can use get_object instead of get_queryset when trying to retrieve single object link: https://stackoverflow.com/questions/52551257/django-detailview-get-queryset-and-get-object
     def get_queryset(self):
         self.library_user = get_object_or_404(LibraryUser, id=self.kwargs['pk'])
         return LibraryUser.objects.filter(id=self.library_user.id)
@@ -147,6 +147,20 @@ class LibraryUserUpdate(UpdateView):
 
     def get_success_url(self):
         return reverse('library_user_update', kwargs = {'pk': self.kwargs['pk']}) 
+
+class LibraryUserDelete(DeleteView):
+    
+    template_name = 'main/library_user_delete.html'
+    context_object_name = 'user'
+
+    def get_queryset(self):
+        # get the custom user to delete the entire user class and not just library user
+        self.custom_user = get_object_or_404(CustomUser, id=self.kwargs['pk'])
+        return CustomUser.objects.filter(id=self.custom_user.id)
+
+    def get_success_url(self):
+        messages.info(self.request, 'User successfully removed')
+        return reverse('dashboard')
 
 class LibraryUserCreate(FormView):
 

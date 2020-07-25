@@ -1,6 +1,19 @@
 {% extends 'main/main.html' %}
+{% load static %}
 
 {% block content %}
+
+<br>
+
+<div class="row">
+    <div class="col-md">
+		{% if messages %}
+			{% for message in messages %}
+			<p id="messages" class="mx-auto w-50 text-center">{{ message }}</p>
+			{% endfor %}
+		{% endif %}
+    </div>
+</div>
 
 {% include 'main/status.html' with total_books_on_loan=total_books_on_loan books_not_yet_overdue=books_not_yet_overdue books_due=books_due %}
 
@@ -34,7 +47,7 @@
                         <td>{{library_user.card_no}}</td>
                         <td>{{library_user.name}}</td>
 						<td><a class="btn btn-sm btn-info" href="{% url 'library_user_update' library_user.id %}">Update</a></td>
-						<td><a class="btn btn-sm btn-danger" href="">Remove</a></td>
+						<td><a class="btn btn-sm btn-danger" href="{% url 'library_user_delete' library_user.user.id %}">Remove</a></td>
 					</tr>
 					{% endfor %}
 				</tbody>
