@@ -1,3 +1,36 @@
+<style>
+    .highlighted-row td {
+        background: green;
+    }
+</style>
+
 {% include 'main/library_users.html' with library_users=library_users %}
 
+<script type="text/javascript">
 
+$(document).ready(function() {
+
+    var usersTable = $("#users-table");
+    var usersTableCells = $("tr td", usersTable);
+
+    usersTableCells.on("click", function(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        var highlightedRow =  $("tr.highlighted-row", usersTable);
+        var targetRow = $(event.target).closest("tr");
+        
+        // remove existing highlighted row if it exists
+        if (highlightedRow) {
+            highlightedRow.removeClass("highlighted-row");
+        }
+
+        // if existing highlighted row is not equivalent to currently selected row, highlight; otherwise highlight
+        if (highlightedRow.data("uid") != targetRow.data("uid")) {
+            targetRow.addClass("highlighted-row");
+        }        
+    })
+});
+
+</script>

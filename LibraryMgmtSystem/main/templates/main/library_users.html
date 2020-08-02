@@ -15,7 +15,7 @@
 				<button class="btn btn-primary" type="submit">Search</button>
             </form>
             <br>
-            <table class="table">
+            <table class="table" id="users-table">
                 <tr>
                     <th>Card No.</th>
                     <th>Name</th>
@@ -24,7 +24,7 @@
                 </tr>
 
                 {% for user in library_users %}
-                    <tr>
+                    <tr data-uid="{{ user.id }}">
                         <td>{{user.card_no}}</td>
                         <td>{{user.name}}</td>
                         <td>{{user.user.email}}</td>
