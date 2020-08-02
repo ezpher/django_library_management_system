@@ -26,7 +26,8 @@ urlpatterns = [
     path('library_user/<int:pk>/', views.LibraryUserDetails.as_view() ,name='library_user_view'),
     path('library_user_create/', views.LibraryUserCreate.as_view(), name='library_user_create'),
     path('library_user_update/<int:pk>/', views.LibraryUserUpdate.as_view(), name='library_user_update'),
-    path('library_user_delete/<int:pk>/', views.LibraryUserDelete.as_view(), name='library_user_delete')
+    path('library_user_delete/<int:pk>/', views.LibraryUserDelete.as_view(), name='library_user_delete'),
+    path('checkout_book_view/', views.CheckoutBookView.as_view(), name='checkout_book_view'),   
 ]
 
 

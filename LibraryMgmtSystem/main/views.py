@@ -109,22 +109,37 @@ class LibraryUserList(ListView):
 
     def get_queryset(self):
         # get library users
-        library_users = get_list_or_404(LibraryUser.objects.all().order_by('name'))
+        # library_users = get_list_or_404(LibraryUser.objects.all().order_by('name')) note that get_list_or_404 returns a list not queryset; similarly for paginated_users, it's a page object so both do not have queryset.model attribute
+        self.library_users_qs = LibraryUser.objects.all().order_by('name')
+
+        # setup filter
+        library_user_filter = LibraryUserFilter(self.request.GET, queryset=self.library_users_qs)    
 
         # setup paginator
         users_page_number = 1
         paginated_users = None
-        users_paginator = Paginator(library_users, '5')        
+        users_paginator = Paginator(self.library_users_qs, '5')        
 
-        # differentiate between clicking on page number and loading page for first time
-        if self.request.method == 'GET' and self.request.GET.get('library_users_page'):      
+        # differentiate between search text and no search text
+        if self.request.method == 'GET' and not self.request.GET.get('name', False):      
             users_page_number = self.request.GET.get('library_users_page')
             paginated_users = users_paginator.get_page(users_page_number)
-        elif self.request.method == 'GET' and not self.request.GET.get('library_users_page', False):
+        elif self.request.method == 'GET' and self.request.GET.get('name', False):
+            self.library_users_qs = library_user_filter.qs
+            users_paginator = Paginator(self.library_users_qs, '5')
             paginated_users = users_paginator.get_page(users_page_number)
 
         # return paginated library users        
         return paginated_users
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # setup filter        
+        context['library_user_filter'] = LibraryUserFilter(self.request.GET, queryset=self.library_users_qs)
+
+        return context
+    
 
 class LibraryUserDetails(DetailView):
 
@@ -195,5 +210,38 @@ class LibraryUserCreate(FormView):
         library_user_creation_form.prefix='library_user_create_form'
         return render(request, template_name=self.template_name, context={'user_create_form':base_user_creation_form, 'library_user_create_form':library_user_creation_form})
 
+class CheckoutBookView(ListView):
+    template_name = 'main/checkout_book_view.html'
+    context_object_name = 'library_users'
 
+    def get_queryset(self):
+        # get library users
+        self.library_users_qs = LibraryUser.objects.all().order_by('name')
 
+        # setup filter
+        library_user_filter = LibraryUserFilter(self.request.GET, queryset=self.library_users_qs)    
+
+        # setup paginator
+        users_page_number = 1
+        paginated_users = None
+        users_paginator = Paginator(self.library_users_qs, '5')        
+
+        # differentiate between search text and no search text
+        if self.request.method == 'GET' and not self.request.GET.get('name', False):      
+            users_page_number = self.request.GET.get('library_users_page')
+            paginated_users = users_paginator.get_page(users_page_number)
+        elif self.request.method == 'GET' and self.request.GET.get('name', False):
+            self.library_users_qs = library_user_filter.qs
+            users_paginator = Paginator(self.library_users_qs, '5')
+            paginated_users = users_paginator.get_page(users_page_number)
+
+        # return paginated library users        
+        return paginated_users
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # setup filter        
+        context['library_user_filter'] = LibraryUserFilter(self.request.GET, queryset=self.library_users_qs)
+
+        return context
