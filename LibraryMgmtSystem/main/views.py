@@ -1,6 +1,9 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404, get_list_or_404, redirect, render
 from django.urls import reverse
+
+import json
 
 from django.contrib.auth.decorators import login_required
 from .decorators import is_authorised_user
@@ -10,11 +13,13 @@ from django.contrib import messages
 from django.utils import timezone
 from django.core.paginator import Paginator
 
+from django.views.generic import View
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, DeleteView, FormView
-from .models import CustomUser, LibraryUser, BookTransaction
-from .forms import LibraryUserEditForm, LibraryUserCreateForm, CustomUserCreationForm
+
+from .models import CustomUser, LibraryUser, Transaction, BookTransaction
+from .forms import LibraryUserEditForm, LibraryUserCreateForm, CustomUserCreationForm, TransactionForm, BookTransactionForm
 from .filters import LibraryUserFilter
 
 # Create your views here.
@@ -245,3 +250,40 @@ class CheckoutBookView(ListView):
         context['library_user_filter'] = LibraryUserFilter(self.request.GET, queryset=self.library_users_qs)
 
         return context
+
+class CheckoutBookWidget(View):
+    def get(self, request, uid):
+        transaction_form = TransactionForm()
+        book_transaction_form = BookTransactionForm()
+
+        context_object = {'library_user_id': uid, 'transaction_form': transaction_form, 'book_transaction_form': book_transaction_form}
+        widget_html = render(request=self.request, template_name='main/checkout_book_widget.html', context=context_object)
+        
+        return widget_html
+
+    # TODO: to update book stock on book checkout
+    def post(self, request, uid):
+        transaction_form = TransactionForm(request.POST)
+        book_transaction_form = BookTransactionForm(request.POST)
+
+        if transaction_form.is_valid() and book_transaction_form.is_valid(): 
+            try:
+                new_transaction_ref_id = transaction_form.save() # need to save or else cannot retrieve new transaction
+                new_transaction = Transaction.objects.get(transaction_ref=new_transaction_ref_id)
+                library_user = LibraryUser.objects.get(id=uid)
+
+                new_book_transaction = book_transaction_form.save(commit=False) 
+                new_book_transaction.library_user = library_user
+                new_book_transaction.transaction = new_transaction
+
+                new_transaction.save()
+                new_book_transaction.save()
+
+                return JsonResponse({'success-message': 'Checkout successful'}, status=200)            
+            except Exception as e:
+                raise e
+        else:
+            context_object = {'library_user_id': uid, 'transaction_form': transaction_form, 'book_transaction_form': book_transaction_form}
+            widget_html_string = render_to_string(request=self.request, template_name='main/checkout_book_widget.html', context=context_object)        
+
+            return JsonResponse({'invalid_form': widget_html_string}, status=400)

@@ -21,16 +21,97 @@ $(document).ready(function() {
         var highlightedRow =  $("tr.highlighted-row", usersTable);
         var targetRow = $(event.target).closest("tr");
         
-        // remove existing highlighted row if it exists
+        // remove existing highlighted row if it exists and any existing checkout book widget
         if (highlightedRow) {
             highlightedRow.removeClass("highlighted-row");
+            removeCheckoutBookWidget('#checkout_widget_parent');
         }
 
         // if existing highlighted row is not equivalent to currently selected row, highlight; otherwise highlight
         if (highlightedRow.data("uid") != targetRow.data("uid")) {
             targetRow.addClass("highlighted-row");
+            getCheckoutBookWidget('#checkout_widget_parent', targetRow.data("uid"));
         }        
     })
+
+    var delegateAnchor = $('#checkout_widget_parent');
+    
+    delegateAnchor.on("click", "#formCheckoutBook input[type=button]", function(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        var formCheckoutBook = $("#formCheckoutBook");        
+        submitCheckoutBookRequest('#checkout_widget_parent', formCheckoutBook)
+    })
+        
+
+    function getCheckoutBookWidget(parentElement, libraryUserID) {
+        
+        $.ajax({
+            url: '{% url "checkout_book_widget" uid=0 %}'.replace('0', libraryUserID),
+            method: 'GET',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // default contenttype
+            success: function(response) {
+                $("#success-message").html("");
+                $(parentElement).html(response);
+            },
+            error: function(error) {
+                alert("There was an error");
+            }
+        })
+    }
+
+    function removeCheckoutBookWidget(parentElement) {
+
+        $(parentElement).html("");        
+
+    }
+
+    function submitCheckoutBookRequest(parentElement, formElement) {
+
+        var formData = serializeForm(formElement);
+        var libraryUserID = getSerializedFormValue(formData, "library_user_id");
+        var transaction_ref = $("#id_transaction_ref").val();
+        var book = $("#id_book").val();
+        var csrf = getSerializedFormValue(formData, "csrfmiddlewaretoken");
+        
+        $.ajax({
+            url: '{% url "checkout_book_widget" uid=0 %}'.replace('0', libraryUserID),
+            method: 'POST',
+            data: { transaction_ref: transaction_ref, book: book, csrfmiddlewaretoken: csrf },
+            success: function(response) {
+
+                formElement.trigger("reset")
+
+                // TODO: to separate out success message into a template which will be rendered and sent as html string in json response whenever it is needed 
+                // e.g. https://stackoverflow.com/questions/13256817/django-how-to-show-messages-under-ajax-function
+                success_message_holder = $("#success-message");
+                success_message_holder.html(response['success-message']);
+
+            },
+            error: function(response) {   
+                $(parentElement).html(response.responseJSON['invalid_form']);
+            }
+        })
+    }
+    
+    //TODO: to shift serializeForm and getSerializedFormValue to main javascript file
+
+    // to convert array of key-value pairs from form into object of key-value pairs e.g. [{key: value}, {key: value}] to {key: value, key: value}
+    function serializeForm(htmlElement) {        
+        var formValues = {};
+        $.each(htmlElement.serializeArray(), function (i, field) {
+            formValues[field.name] = field.value;
+        });
+
+        return formValues
+    }
+
+    // to get value from key from serialized object outputted by serializeForm
+    function getSerializedFormValue(values, valueName) {
+        return values[valueName]
+    }
 });
 
 </script>

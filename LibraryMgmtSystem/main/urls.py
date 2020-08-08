@@ -28,6 +28,7 @@ urlpatterns = [
     path('library_user_update/<int:pk>/', views.LibraryUserUpdate.as_view(), name='library_user_update'),
     path('library_user_delete/<int:pk>/', views.LibraryUserDelete.as_view(), name='library_user_delete'),
     path('checkout_book_view/', views.CheckoutBookView.as_view(), name='checkout_book_view'),   
+    path('get_checkout_widget/<int:uid>/', views.CheckoutBookWidget.as_view(), name='checkout_book_widget'),   
 ]
 
 

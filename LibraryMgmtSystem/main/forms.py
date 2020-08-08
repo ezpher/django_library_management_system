@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 from django.forms import ModelForm
-from .models import CustomUser, LibraryUser
+from .models import CustomUser, LibraryUser, Book, Transaction, BookTransaction
 from django.utils import timezone
 
 
@@ -41,3 +41,23 @@ class LibraryUserEditForm(forms.ModelForm):
     class Meta:
         model = LibraryUser
         fields = ('card_no', 'name', 'date_joined')
+
+
+# Use multiple forms when checking out a book i.e. TransactionForm, and BookTransactionForm
+# Book transaction form should also take in the selected library user from UI
+
+class TransactionForm(forms.ModelForm):
+
+    transaction_ref = forms.CharField(label='Transaction Ref.:', widget = forms.TextInput())
+
+    class Meta:
+        model = Transaction
+        fields = ('transaction_ref',)
+
+class BookTransactionForm(forms.ModelForm):
+
+    book = forms.ModelChoiceField(label='Book:', queryset=Book.objects.all())
+
+    class Meta:
+        model = BookTransaction
+        fields = ('book',)
