@@ -85,8 +85,12 @@ $(document).ready(function() {
             method: 'POST',
             data: { transaction_ref: transaction_ref, book: book, csrfmiddlewaretoken: csrf },
             success: function(response) {
+                
+                $(".errorlist").remove();
+                clearForm($("#formCheckoutBook"));                
 
-                formElement.trigger("reset")
+                // formElement.trigger("reset"); works to set form values to default (not necessary to be "") 
+                // e.g. submitting valid input after erroneous input, using reset will set default values to previous erroneous values                                                 
 
                 success_message_holder = $("#success-message");
                 success_message_holder.html("<p id='messages'>" + response['success-message'] + "</p>");
@@ -98,7 +102,7 @@ $(document).ready(function() {
         })
     }
     
-    //TODO: to shift serializeForm and getSerializedFormValue to main javascript file
+    //TODO: to shift functions below to main javascript file
 
     // to convert array of key-value pairs from form into object of key-value pairs e.g. [{key: value}, {key: value}] to {key: value, key: value}
     function serializeForm(htmlElement) {        
@@ -113,6 +117,12 @@ $(document).ready(function() {
     // to get value from key from serialized object outputted by serializeForm
     function getSerializedFormValue(values, valueName) {
         return values[valueName]
+    }
+
+    function clearForm($form)
+    {
+        $form.find(':input').not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');
+        $form.find(':checkbox, :radio').prop('checked', false);
     }
 });
 
