@@ -278,7 +278,7 @@ class CheckoutBookWidget(View):
 
                 new_transaction.save()
                 new_book_transaction.save()
-
+                
                 return JsonResponse({'success-message': 'Checkout successful'}, status=200)            
             except Exception as e:
                 raise e

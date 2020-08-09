@@ -36,6 +36,7 @@ $(document).ready(function() {
 
     var delegateAnchor = $('#checkout_widget_parent');
     
+    // on checkout book form submit button click, submit form
     delegateAnchor.on("click", "#formCheckoutBook input[type=button]", function(event) {
 
         event.preventDefault();
@@ -53,7 +54,8 @@ $(document).ready(function() {
             method: 'GET',
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // default contenttype
             success: function(response) {
-                $("#success-message").html("");
+                success_message_holder = $("#success-message");
+                success_message_holder.html("");
                 $(parentElement).html(response);
             },
             error: function(error) {
@@ -64,6 +66,8 @@ $(document).ready(function() {
 
     function removeCheckoutBookWidget(parentElement) {
 
+        success_message_holder = $("#success-message");
+        success_message_holder.html("");
         $(parentElement).html("");        
 
     }
@@ -84,10 +88,8 @@ $(document).ready(function() {
 
                 formElement.trigger("reset")
 
-                // TODO: to separate out success message into a template which will be rendered and sent as html string in json response whenever it is needed 
-                // e.g. https://stackoverflow.com/questions/13256817/django-how-to-show-messages-under-ajax-function
                 success_message_holder = $("#success-message");
-                success_message_holder.html(response['success-message']);
+                success_message_holder.html("<p id='messages'>" + response['success-message'] + "</p>");
 
             },
             error: function(response) {   
