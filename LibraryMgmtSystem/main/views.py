@@ -18,7 +18,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, DeleteView, FormView
 
-from .models import CustomUser, LibraryUser, Transaction, BookTransaction
+from .models import CustomUser, LibraryUser, Transaction, BookTransaction, Book
 from .forms import LibraryUserEditForm, LibraryUserCreateForm, CustomUserCreationForm, TransactionForm, BookTransactionForm
 from .filters import LibraryUserFilter
 
@@ -270,18 +270,27 @@ class CheckoutBookWidget(View):
 
         if transaction_form.is_valid() and book_transaction_form.is_valid(): 
             try:
-                new_transaction_ref_id = transaction_form.save() # need to save or else cannot retrieve new transaction
-                new_transaction = Transaction.objects.get(transaction_ref=new_transaction_ref_id)
-                library_user = LibraryUser.objects.get(id=uid)
+                breakpoint()
+                book_id = request.POST['book']
+                book = Book.objects.get(id=book_id)
 
-                new_book_transaction = book_transaction_form.save(commit=False) 
-                new_book_transaction.library_user = library_user
-                new_book_transaction.transaction = new_transaction
+                if book.stock > 0:                    
+                    new_transaction_ref_id = transaction_form.save() # need to save or else cannot retrieve new transaction
+                    new_transaction = Transaction.objects.get(transaction_ref=new_transaction_ref_id)
+                    library_user = LibraryUser.objects.get(id=uid)                
 
-                new_transaction.save()
-                new_book_transaction.save()
+                    new_book_transaction = book_transaction_form.save(commit=False) 
+                    new_book_transaction.library_user = library_user
+                    new_book_transaction.transaction = new_transaction
+
+                    new_transaction.save()
+                    new_book_transaction.save()
+
+                    Book.objects.filter(id=book_id).update(stock=book.stock-1)
                 
-                return JsonResponse({'success-message': 'Checkout successful'}, status=200)            
+                    return JsonResponse({'success-message': 'Checkout successful'}, status=200)            
+                else:
+                    return JsonResponse({'success-message': 'Book out of stock'}, status=400)
             except Exception as e:
                 raise e
         else:
