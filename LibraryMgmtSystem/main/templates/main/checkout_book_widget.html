@@ -2,12 +2,14 @@
 
 <div class="card card-body">
     <h5>Checkout Book</h5>
-    <hr>    
+    <hr>
+    Selected library User: {{library_user.name}}   
+    <br>
+    <br> 
     <form method="POST" id="formCheckoutBook">        
         {% csrf_token %}
         <input type="hidden" name="library_user_id" value="{{ library_user_id }}">
         {{transaction_form.as_p}}
-        <hr>
         {{book_transaction_form.as_p}}
         <input type="button" value="Checkout">
     </form>

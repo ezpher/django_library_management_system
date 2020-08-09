@@ -256,7 +256,9 @@ class CheckoutBookWidget(View):
         transaction_form = TransactionForm()
         book_transaction_form = BookTransactionForm()
 
-        context_object = {'library_user_id': uid, 'transaction_form': transaction_form, 'book_transaction_form': book_transaction_form}
+        library_user = LibraryUser.objects.get(id=uid)
+
+        context_object = {'library_user_id': uid, 'library_user': library_user, 'transaction_form': transaction_form, 'book_transaction_form': book_transaction_form}
         widget_html = render(request=self.request, template_name='main/checkout_book_widget.html', context=context_object)
         
         return widget_html
