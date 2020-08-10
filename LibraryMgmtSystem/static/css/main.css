@@ -25,3 +25,9 @@
         padding: 10px;
         margin-top: 10px;
     }
+
+    input[readonly].field_readonly {
+        background-color:transparent;
+        border: 0;
+        font-size: 1em;
+    }

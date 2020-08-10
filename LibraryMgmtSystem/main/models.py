@@ -68,7 +68,7 @@ class Book(models.Model):
 
 class Transaction(models.Model):
     # TODO to make transaction ref auto-generated
-    transaction_ref = models.CharField(max_length=13, unique=True)
+    transaction_ref = models.CharField(max_length=17, unique=True)
     books = models.ManyToManyField(Book, through='BookTransaction', blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     

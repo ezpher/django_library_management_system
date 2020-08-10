@@ -48,7 +48,7 @@ class LibraryUserEditForm(forms.ModelForm):
 
 class TransactionForm(forms.ModelForm):
 
-    transaction_ref = forms.CharField(label='Transaction Ref.:', widget = forms.TextInput())
+    transaction_ref = forms.CharField(label='Transaction Ref.:', widget = forms.TextInput(attrs={'readonly':'readonly', 'class': 'field_readonly'}), min_length=17, max_length=17)
 
     class Meta:
         model = Transaction

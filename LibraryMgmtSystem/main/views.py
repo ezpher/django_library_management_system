@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 from django.utils import timezone
+from .utility import get_transaction_ref
 from django.core.paginator import Paginator
 
 from django.views.generic import View
@@ -253,7 +254,7 @@ class CheckoutBookView(ListView):
 
 class CheckoutBookWidget(View):
     def get(self, request, uid):
-        transaction_form = TransactionForm()
+        transaction_form = TransactionForm(initial={'transaction_ref': get_transaction_ref()})
         book_transaction_form = BookTransactionForm()
 
         library_user = LibraryUser.objects.get(id=uid)
@@ -263,14 +264,12 @@ class CheckoutBookWidget(View):
         
         return widget_html
 
-    # TODO: to update book stock on book checkout
     def post(self, request, uid):
         transaction_form = TransactionForm(request.POST)
         book_transaction_form = BookTransactionForm(request.POST)
 
         if transaction_form.is_valid() and book_transaction_form.is_valid(): 
             try:
-                breakpoint()
                 book_id = request.POST['book']
                 book = Book.objects.get(id=book_id)
 
@@ -287,10 +286,11 @@ class CheckoutBookWidget(View):
                     new_book_transaction.save()
 
                     Book.objects.filter(id=book_id).update(stock=book.stock-1)
-                
-                    return JsonResponse({'success-message': 'Checkout successful'}, status=200)            
+
+                    # generate a new transaction ref for transaction ref field to avoid validation message that transaction ref is not unique 
+                    return JsonResponse({'success-message': 'Checkout successful', 'new_transaction_ref': get_transaction_ref()}, status=200)            
                 else:
-                    return JsonResponse({'success-message': 'Book out of stock'}, status=400)
+                    return JsonResponse({'success-message': 'Book out of stock', 'new_transaction_ref': get_transaction_ref()}, status=400)
             except Exception as e:
                 raise e
         else:

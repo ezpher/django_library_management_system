@@ -87,7 +87,8 @@ $(document).ready(function() {
             success: function(response) {
                 
                 $(".errorlist").remove();
-                clearForm($("#formCheckoutBook"));                
+                clearForm($("#formCheckoutBook")); 
+                $("#id_transaction_ref").val(response['new_transaction_ref'])
 
                 // formElement.trigger("reset"); works to set form values to default (not necessary to be "") 
                 // e.g. submitting valid input after erroneous input, using reset will set default values to previous erroneous values                                                 
