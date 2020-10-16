@@ -1,11 +1,13 @@
 # django_library_management_system
 A library management system in Django
 
+
 ## Features:
 Login and Logout\
 View overview of system via dashboard i.e. books on loan, overdue books, users\
 Check-in and check-out books\
 Manage library users
+
 
 ## Non-exhaustive list of to-dos:
 Add Manage Transactions page\
@@ -13,6 +15,7 @@ Add modals for confirmation popups e.g. removal of user\
 Renew book functionality\
 Styling of forms, search bars and other widgets\
 Add ER Diagram
+
 
 ## Screenshots of features:
 **Login Screen:**
@@ -40,9 +43,9 @@ Add ER Diagram
 clicking on delete in dashboard will remove current library user and reload dashboard
 
 
-**Check-in books**\
+**Check-in books:**\
 clicking on check-in in dashboard will check in current book for the user and reload dashboard
 
 
-**Check-out books**\
+**Check-out books:**\
 ![image](https://user-images.githubusercontent.com/40519064/96261293-d978b180-0ff2-11eb-9bf9-166097910150.png)
