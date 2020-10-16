@@ -37,11 +37,11 @@ Add ER Diagram
 ![image](https://user-images.githubusercontent.com/40519064/96261183-aafad680-0ff2-11eb-8541-f785a2565d27.png)
 
 --Delete\
-clicking on delete in dashboard will remove current library user and reload dashboard\
+clicking on delete in dashboard will remove current library user and reload dashboard
 
 
 **Check-in books**\
-clicking on check-in in dashboard will check in current book for the user and reload dashboard\
+clicking on check-in in dashboard will check in current book for the user and reload dashboard
 
 
 **Check-out books**\
