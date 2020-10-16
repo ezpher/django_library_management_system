@@ -99,7 +99,7 @@
 				{% for book_transaction in book_transactions %}
 				<tbody>
 					<tr>
-						<td><a class="btn btn-sm btn-info" href="">Check-in</a></td>
+						<td><a class="btn btn-sm btn-info" href="{% url 'checkin_book' book_transaction.id %}">Check-in</a></td>
 						<td><a class="btn btn-sm btn-info" href="">Renew</a></td>
 						<!-- <td>{{book_transaction.times_renewed}}</td> -->
 						<td>{{book_transaction.date_due}}</td>
@@ -139,3 +139,4 @@
 </div>
 
 {% endblock %}
+

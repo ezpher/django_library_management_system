@@ -216,6 +216,19 @@ class LibraryUserCreate(FormView):
         library_user_creation_form.prefix='library_user_create_form'
         return render(request, template_name=self.template_name, context={'user_create_form':base_user_creation_form, 'library_user_create_form':library_user_creation_form})
 
+class CheckinBook(View):
+    def get(self, request, pk):
+        selected_book_transaction = BookTransaction.objects.get(id=pk)
+        selected_book_transaction.date_returned = timezone.now()
+
+        selected_book = Book.objects.get(id=selected_book_transaction.book.id)
+        selected_book.stock = (selected_book.stock + 1)
+
+        selected_book_transaction.save()
+        selected_book.save()
+
+        return redirect('dashboard')
+
 class CheckoutBookView(ListView):
     template_name = 'main/checkout_book_view.html'
     context_object_name = 'library_users'
