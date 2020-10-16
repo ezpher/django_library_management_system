@@ -1,7 +1,7 @@
-# django_library_management_system\
-A library management system in Django\
+# django_library_management_system
+A library management system in Django
 
-## Features:\
+## Features:
 Login and Logout\
 View overview of system via dashboard i.e. books on loan, overdue books, users\
 Check-in and check-out books\
