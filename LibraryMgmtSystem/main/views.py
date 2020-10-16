@@ -96,7 +96,7 @@ def dashboard(request):
         paginated_users = users_paginator.get_page(users_page_number)
 
     # get and paginate book transactions
-    book_transactions = BookTransaction.objects.filter(date_due__lt=timezone.now()).order_by('date_due')
+    book_transactions = BookTransaction.objects.filter(date_returned__isnull=True, date_due__lt=timezone.now()).order_by('date_due')
     transactions_page_number = request.GET.get('transactions_page')
     transactions_paginator = Paginator(book_transactions, '5')
     paginated_book_transactions = transactions_paginator.get_page(transactions_page_number)
